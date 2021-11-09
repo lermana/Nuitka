@@ -33,7 +33,7 @@ from nuitka.PythonVersions import python_version
 from nuitka.utils.FileOperations import getFileContentByLine
 from nuitka.utils.ModuleNames import ModuleName
 from nuitka.utils.SharedLibraries import getPyWin32Dir, locateDLL
-from nuitka.utils.Utils import getOS, isMacOS, isWin32Windows
+from nuitka.utils.Utils import getOS, isLinux, isMacOS, isWin32Windows
 
 
 class NuitkaPluginPopularImplicitImports(NuitkaPluginBase):
@@ -1114,7 +1114,7 @@ class NuitkaPluginPopularImplicitImports(NuitkaPluginBase):
                         if getOS() == "Windows":
                             yield plugin_name_part
                     elif os_part.startswith("linux"):
-                        if getOS() == "Linux":
+                        if isLinux():
                             yield plugin_name_part
                     elif os_part.startswith("darwin"):
                         if isMacOS():
@@ -1148,7 +1148,7 @@ class NuitkaPluginPopularImplicitImports(NuitkaPluginBase):
     def getExtraDlls(self, module):
         full_name = module.getFullName()
 
-        if full_name == "uuid" and getOS() == "Linux":
+        if full_name == "uuid" and isLinux():
             uuid_dll_path = locateDLL("uuid")
 
             if uuid_dll_path is not None:
@@ -1157,7 +1157,7 @@ class NuitkaPluginPopularImplicitImports(NuitkaPluginBase):
                         uuid_dll_path, os.path.basename(uuid_dll_path), None
                     ),
                 )
-        elif full_name == "iptc" and getOS() == "Linux":
+        elif full_name == "iptc" and isLinux():
             import iptc.util  # pylint: disable=I0021,import-error
 
             xtwrapper_dll = iptc.util.find_library("xtwrapper")[0]
